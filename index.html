@@ -37,7 +37,7 @@ body,input,textarea,select{font-size:16px}
 .badge{margin-left:auto;padding:6px 10px;border-radius:999px;background:rgba(16,200,164,.12);border:1px solid rgba(16,200,164,.25);font-size:.72rem;color:#a6f8ea;font-weight:700;flex-shrink:0}
 
 /* ── NAV DESKTOP ── */
-.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 10px 10px}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 10px 10px}
 .nav button{padding:10px 6px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.78rem;transition:all .2s}
 .nav button.active{background:linear-gradient(135deg,rgba(78,161,255,.2),rgba(16,200,164,.16));color:#fff;border-color:rgba(78,161,255,.35)}
 
@@ -84,16 +84,28 @@ body,input,textarea,select{font-size:16px}
   position:fixed;left:50%;transform:translateX(-50%);
   bottom:max(10px, env(safe-area-inset-bottom, 10px));
   width:min(532px, calc(100% - 20px));
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:10px;
   background:rgba(12,20,34,.92);backdrop-filter:blur(14px);
   border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);
   z-index:100;
 }
 .sticky-mobile button{
-  padding:12px 6px;border-radius:14px;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);font-size:.78rem;transition:all .2s;
+  padding:10px 4px;border-radius:12px;border:1px solid var(--border);
+  background:var(--surface);color:var(--muted);font-size:.72rem;transition:all .2s;
 }
 .sticky-mobile button.active{background:linear-gradient(135deg,rgba(78,161,255,.2),rgba(16,200,164,.16));color:#fff}
+
+/* ── IMPORT/EXPORT ── */
+.import-drop{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s;background:transparent}
+.import-drop:hover,.import-drop.drag-over{border-color:var(--primary);background:rgba(78,161,255,.06)}
+.import-drop svg{width:36px;height:36px;margin-bottom:10px;color:var(--faint)}
+.import-drop p{font-size:.9rem;color:var(--muted);line-height:1.5}
+.import-drop strong{color:var(--primary)}
+.import-result{padding:10px 13px;border-radius:var(--radius-sm);font-size:.86rem;line-height:1.5;margin-top:10px}
+.import-result.ok{background:rgba(16,200,164,.1);border:1px solid rgba(16,200,164,.22);color:#a7f5e7}
+.import-result.err{background:rgba(255,127,134,.1);border:1px solid rgba(255,127,134,.22);color:#ffb5bb}
+.import-result.warn{background:rgba(255,190,99,.1);border:1px solid rgba(255,190,99,.22);color:var(--warn)}
+.code-block{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-family:monospace;font-size:.78rem;color:var(--muted);white-space:pre;overflow-x:auto;line-height:1.6;margin-top:8px}
 
 .hidden{display:none!important}
 
@@ -126,6 +138,7 @@ body,input,textarea,select{font-size:16px}
     <button data-tab-btn="lexicon">Lexique</button>
     <button data-tab-btn="phrases">Phrasier</button>
     <button data-tab-btn="history">Historique</button>
+    <button data-tab-btn="importexport">Import/Export</button>
   </nav>
 
   <main class="main">
@@ -268,6 +281,65 @@ body,input,textarea,select{font-size:16px}
       </div>
     </section>
 
+    <!-- ══ IMPORT / EXPORT ══ -->
+    <section class="tab" id="tab-importexport">
+
+      <!-- Zone glisser-déposer / sélection fichier -->
+      <div class="card">
+        <div class="label"><span>📥 Importer un fichier JSON</span></div>
+        <p class="small" style="margin-bottom:12px">Glisse un fichier <strong>.json</strong> ici, ou appuie pour le sélectionner depuis ton téléphone ou ordinateur. Les entrées existantes seront fusionnées sans doublons.</p>
+        <div class="import-drop" id="importDrop" role="button" tabindex="0" aria-label="Zone d'import JSON">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p><strong>Appuyer pour choisir un fichier</strong><br>ou glisser-déposer un .json ici</p>
+        </div>
+        <input type="file" id="importFileInput" accept=".json,application/json" style="display:none">
+        <div id="importResult" style="display:none" class="import-result"></div>
+      </div>
+
+      <!-- Export -->
+      <div class="card">
+        <div class="label"><span>📤 Exporter le lexique</span><span id="exportCount">0 entrées</span></div>
+        <p class="small" style="margin-bottom:12px">Télécharge ton lexique complet en JSON. Tu pourras le réimporter plus tard, le partager ou le modifier dans un éditeur de texte.</p>
+        <div class="toolbar">
+          <button class="btn btn-primary" id="exportBtn">⬇ Télécharger le lexique</button>
+          <button class="btn btn-ghost"   id="exportCopyBtn">Copier JSON</button>
+        </div>
+      </div>
+
+      <!-- Format attendu -->
+      <div class="card">
+        <div class="label"><span>📋 Format du fichier JSON</span></div>
+        <p class="small" style="margin-bottom:8px">Chaque entrée doit être un objet avec ces champs (tous optionnels sauf au moins un) :</p>
+        <div class="code-block">[
+  {
+    "fr":  "douleur thoracique",
+    "shi": "maumivu ya kifua",
+    "gc":  "maumivu ya kifua",
+    "anj": "maumivu ya kifua",
+    "cat": "Urgence"
+  },
+  {
+    "fr":  "allergie",
+    "shi": "aleji",
+    "gc":  "aleji",
+    "anj": "aleji",
+    "cat": "Antécédents"
+  }
+]</div>
+        <p class="small" style="margin-top:10px">Les champs <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">fr</code>, <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">shi</code>, <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">gc</code>, <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">anj</code> et <code style="background:var(--surface-2);padding:1px 5px;border-radius:4px">cat</code> sont les seules clés lues. Les autres sont ignorées.</p>
+      </div>
+
+      <!-- Télécharger un modèle vide -->
+      <div class="card">
+        <div class="label"><span>🗂 Modèle vide</span></div>
+        <p class="small" style="margin-bottom:10px">Télécharge un fichier modèle avec 3 exemples pour commencer à remplir ton propre lexique.</p>
+        <button class="btn btn-ghost" id="downloadTemplateBtn">⬇ Télécharger le modèle</button>
+      </div>
+
+    </section>
+
   </main>
 </div>
 
@@ -277,6 +349,7 @@ body,input,textarea,select{font-size:16px}
   <button data-mobile-tab="lexicon">Lexique</button>
   <button data-mobile-tab="phrases">Phrases</button>
   <button data-mobile-tab="history">Historique</button>
+  <button data-mobile-tab="importexport">JSON</button>
 </div>
 
 <script>
@@ -548,6 +621,7 @@ function saveLexiconEntry() {
   else { offlineLibrary.unshift(entry); }
   offlineLibrary = offlineLibrary.slice(0, 500);
   saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); clearLexiconForm();
+  updateExportCount();
   setStatus('Entrée ajoutée au lexique personnel.');
 }
 
@@ -791,13 +865,144 @@ els.translateBtn.addEventListener('click', async () => {
 });
 
 // ═══════════════════════════════════════════════
-//  INITIALISATION
+//  IMPORT / EXPORT JSON
 // ═══════════════════════════════════════════════
+
+function updateExportCount() {
+  const el = document.getElementById('exportCount');
+  if (el) el.textContent = `${offlineLibrary.length} entrée${offlineLibrary.length > 1 ? 's' : ''}`;
+}
+
+// ── EXPORT ──
+function exportLexicon() {
+  const exportData = offlineLibrary.map(({ fr, shi, gc, anj, cat }) => ({ fr, shi, gc, anj, cat }));
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lexique-medtraduction-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportCopyJSON() {
+  const exportData = offlineLibrary.map(({ fr, shi, gc, anj, cat }) => ({ fr, shi, gc, anj, cat }));
+  const json = JSON.stringify(exportData, null, 2);
+  navigator.clipboard.writeText(json)
+    .then(() => showImportResult('JSON copié dans le presse-papiers !', 'ok'))
+    .catch(() => showImportResult('Copie non disponible — utilisez le bouton Télécharger.', 'warn'));
+}
+
+function downloadTemplate() {
+  const template = [
+    { fr: 'douleur thoracique', shi: 'maumivu ya kifua', gc: 'maumivu ya kifua', anj: 'maumivu ya kifua', cat: 'Urgence' },
+    { fr: 'allergie aux pénicillines', shi: 'aleji ya penisiline', gc: 'aleji ya penisiline', anj: 'aleji ya penisiline', cat: 'Antécédents' },
+    { fr: 'Prenez un comprimé matin et soir', shi: '', gc: '', anj: '', cat: 'Traitement' }
+  ];
+  const json = JSON.stringify(template, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'modele-lexique-medtraduction.json';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ── IMPORT ──
+function showImportResult(msg, type = 'ok') {
+  const el = document.getElementById('importResult');
+  el.textContent = msg; el.className = `import-result ${type}`; el.style.display = 'block';
+}
+
+function processImportedJSON(text) {
+  let data;
+  try { data = JSON.parse(text); }
+  catch { showImportResult('❌ Fichier JSON invalide — vérifiez la syntaxe.', 'err'); return; }
+
+  if (!Array.isArray(data)) {
+    showImportResult('❌ Le fichier doit contenir un tableau JSON : [ { ... }, { ... } ]', 'err'); return;
+  }
+  if (data.length === 0) {
+    showImportResult('⚠️ Le fichier est vide (tableau sans entrées).', 'warn'); return;
+  }
+
+  let added = 0, updated = 0, skipped = 0;
+  data.forEach((entry, i) => {
+    const clean = {
+      id:  genId(),
+      fr:  (entry.fr  || '').toString().trim(),
+      shi: (entry.shi || '').toString().trim(),
+      gc:  (entry.gc  || '').toString().trim(),
+      anj: (entry.anj || '').toString().trim(),
+      cat: (entry.cat || 'Importé').toString().trim()
+    };
+    if (!clean.fr && !clean.shi && !clean.gc && !clean.anj) { skipped++; return; }
+
+    const dup = offlineLibrary.find(item =>
+      ['fr','shi','gc','anj'].some(l => normalize(item[l]) && normalize(item[l]) === normalize(clean[l]))
+    );
+    if (dup) { Object.assign(dup, { ...clean, id: dup.id }); updated++; }
+    else { offlineLibrary.unshift(clean); added++; }
+  });
+
+  offlineLibrary = offlineLibrary.slice(0, 500);
+  saveJSON(STORAGE.offline, offlineLibrary);
+  renderLexicon();
+  updateExportCount();
+
+  const parts = [];
+  if (added)   parts.push(`${added} entrée${added>1?'s':''} ajoutée${added>1?'s':''}`);
+  if (updated) parts.push(`${updated} mise${updated>1?'s':''} à jour`);
+  if (skipped) parts.push(`${skipped} ignorée${skipped>1?'s':''} (vides)`);
+  showImportResult(`✅ Import terminé — ${parts.join(', ')}.`, 'ok');
+}
+
+function handleImportFile(file) {
+  if (!file) return;
+  if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+    showImportResult('❌ Ce fichier n\'est pas un JSON. Sélectionnez un fichier .json', 'err'); return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    showImportResult('❌ Fichier trop volumineux (max 2 Mo).', 'err'); return;
+  }
+  showImportResult('⏳ Lecture du fichier…', 'warn');
+  const reader = new FileReader();
+  reader.onload = e => processImportedJSON(e.target.result);
+  reader.onerror = () => showImportResult('❌ Erreur de lecture du fichier.', 'err');
+  reader.readAsText(file, 'utf-8');
+}
+
+// ── Événements Import/Export ──
+document.getElementById('importDrop').addEventListener('click', () => document.getElementById('importFileInput').click());
+document.getElementById('importDrop').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') document.getElementById('importFileInput').click(); });
+
+document.getElementById('importFileInput').addEventListener('change', e => {
+  handleImportFile(e.target.files[0]);
+  e.target.value = ''; // reset pour pouvoir réimporter le même fichier
+});
+
+// Glisser-déposer
+const dropZone = document.getElementById('importDrop');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  handleImportFile(file);
+});
+
+document.getElementById('exportBtn').addEventListener('click', exportLexicon);
+document.getElementById('exportCopyBtn').addEventListener('click', exportCopyJSON);
+document.getElementById('downloadTemplateBtn').addEventListener('click', downloadTemplate);
+
+
 (function init() {
   updateCounter();
   renderPhrasebook();
   renderHistory();
   renderLexicon();
+  updateExportCount();
   loadBundledLexicon();
   if (localStorage.getItem(STORAGE.api)) { els.apiStatus.textContent = 'Clé API déjà configurée sur cet appareil.'; }
   if ('serviceWorker' in navigator) {
