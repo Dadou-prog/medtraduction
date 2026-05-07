@@ -23,47 +23,101 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#09111d 0%, #0b1220 100%);color:var(--text)}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#09111d 0%,#0b1220 100%);color:var(--text)}
 button,input,textarea,select{font:inherit} button{cursor:pointer}
 body,input,textarea,select{font-size:16px}
 .app{max-width:560px;min-height:100dvh;margin:0 auto;display:flex;flex-direction:column}
+
+/* ── HEADER ── */
 .header{padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 14px;display:flex;align-items:center;gap:12px}
-.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;box-shadow:var(--shadow)}
-.logo svg{width:24px;height:24px;fill:#fff}.title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700}.subtitle{font-size:.78rem;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
-.badge{margin-left:auto;padding:6px 10px;border-radius:999px;background:rgba(16,200,164,.12);border:1px solid rgba(16,200,164,.25);font-size:.72rem;color:#a6f8ea;font-weight:700}
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;box-shadow:var(--shadow);flex-shrink:0}
+.logo svg{width:24px;height:24px;fill:#fff}
+.title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700}
+.subtitle{font-size:.78rem;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.badge{margin-left:auto;padding:6px 10px;border-radius:999px;background:rgba(16,200,164,.12);border:1px solid rgba(16,200,164,.25);font-size:.72rem;color:#a6f8ea;font-weight:700;flex-shrink:0}
+
+/* ── NAV DESKTOP ── */
 .nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 10px 10px}
-.nav button{padding:10px 6px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.78rem}
+.nav button{padding:10px 6px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.78rem;transition:all .2s}
 .nav button.active{background:linear-gradient(135deg,rgba(78,161,255,.2),rgba(16,200,164,.16));color:#fff;border-color:rgba(78,161,255,.35)}
+
+/* ── MAIN ── */
 .main{flex:1;overflow:auto;padding:6px 14px calc(env(safe-area-inset-bottom,0px) + 92px);display:flex;flex-direction:column;gap:14px}
 .card{background:rgba(21,32,56,.96);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
-.row,.toolbar,.stack-row{display:flex;gap:10px;align-items:center}.toolbar{flex-wrap:wrap}.stack-row{align-items:stretch}
+
+/* ── FIX #1 : lang-row ne s'empile PAS sur mobile ── */
+/* stack-row s'empile sur mobile (utilisé pour apiKey), lang-row reste horizontal */
+.lang-row{display:flex;gap:10px;align-items:center}
+.row,.toolbar{display:flex;gap:10px;align-items:center}
+.toolbar{flex-wrap:wrap}
+/* stack-row est réservé à des empilements intentionnels (ex: input + bouton) */
+.stack-row{display:flex;gap:10px;align-items:stretch}
+
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.76rem;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
 .input,.select,.textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text)}
 .textarea{min-height:112px;resize:vertical;line-height:1.5}.textarea.small{min-height:84px}
-.btn{border:none;border-radius:14px;padding:12px 14px;font-weight:700;min-height:46px}
+.btn{border:none;border-radius:14px;padding:12px 14px;font-weight:700;min-height:46px;transition:opacity .15s}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-deep));color:#fff}
 .btn-secondary{background:rgba(16,200,164,.12);color:#a7f5e7;border:1px solid rgba(16,200,164,.24)}
 .btn-ghost{background:var(--surface);color:var(--muted);border:1px solid var(--border)}
 .btn-danger{background:rgba(255,127,134,.12);color:#ffb5bb;border:1px solid rgba(255,127,134,.22)}
-.swap{width:46px;height:46px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);flex:0 0 46px}
+
+/* FIX #2 : swap reste rond même sur mobile */
+.swap{width:46px;height:46px;min-width:46px;border-radius:50%!important;border:1px solid var(--border);background:var(--surface);color:var(--text);flex:0 0 46px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+
 .banner{display:flex;gap:10px;align-items:flex-start;background:rgba(255,190,99,.1);border:1px solid rgba(255,190,99,.23);color:var(--warn)}
 .tab{display:none;flex-direction:column;gap:14px}.tab.active{display:flex}
-.small,.meta{font-size:.86rem;color:var(--muted);line-height:1.5}.result{min-height:96px;white-space:pre-wrap;line-height:1.6}.placeholder{color:var(--faint);font-style:italic}
-.list{display:flex;flex-direction:column;gap:10px}.item{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:12px}.item h4{font-size:.95rem;margin-bottom:4px}
-.lang-grid{display:grid;grid-template-columns:1fr;gap:10px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chip{padding:5px 8px;border-radius:999px;background:rgba(78,161,255,.12);border:1px solid rgba(78,161,255,.22);font-size:.74rem;color:var(--primary)}
-.sticky-mobile{position:fixed;left:50%;transform:translateX(-50%);bottom:max(10px, env(safe-area-inset-bottom));width:min(532px, calc(100% - 20px));display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;background:rgba(12,20,34,.92);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow)}
-.sticky-mobile button{padding:12px 6px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.78rem}.sticky-mobile button.active{background:linear-gradient(135deg,rgba(78,161,255,.2),rgba(16,200,164,.16));color:#fff}
+.small,.meta{font-size:.86rem;color:var(--muted);line-height:1.5}
+.result{min-height:96px;white-space:pre-wrap;line-height:1.6}
+.placeholder{color:var(--faint);font-style:italic}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:12px}
+.item h4{font-size:.95rem;margin-bottom:4px}
+.lang-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{padding:5px 8px;border-radius:999px;background:rgba(78,161,255,.12);border:1px solid rgba(78,161,255,.22);font-size:.74rem;color:var(--primary)}
+
+/* ── STICKY MOBILE NAV ── */
+.sticky-mobile{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:max(10px, env(safe-area-inset-bottom, 10px));
+  width:min(532px, calc(100% - 20px));
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;
+  background:rgba(12,20,34,.92);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);
+  z-index:100;
+}
+.sticky-mobile button{
+  padding:12px 6px;border-radius:14px;border:1px solid var(--border);
+  background:var(--surface);color:var(--muted);font-size:.78rem;transition:all .2s;
+}
+.sticky-mobile button.active{background:linear-gradient(135deg,rgba(78,161,255,.2),rgba(16,200,164,.16));color:#fff}
+
 .hidden{display:none!important}
-@media (min-width:561px){.sticky-mobile{display:none}}
-@media (max-width:560px){.nav{display:none}.grid-2{grid-template-columns:1fr}.stack-row{flex-direction:column}.toolbar .btn{flex:1 1 calc(50% - 10px)}}
+
+/* ── RESPONSIVE ── */
+@media(min-width:561px){.sticky-mobile{display:none}}
+@media(max-width:560px){
+  .nav{display:none}
+  .grid-2{grid-template-columns:1fr}
+  /* FIX: stack-row s'empile (apiKey), lang-row reste horizontal */
+  .stack-row{flex-direction:column}
+  .toolbar .btn{flex:1 1 calc(50% - 10px)}
+}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="header">
-    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 5h2v3h3v2h-3v5h-2v-5H8v-2h3V7z"/></svg></div>
-    <div><div class="title">MédTraduction V3</div><div class="subtitle">Mobile · lexique éditable · hors-ligne</div></div>
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 5h2v3h3v2h-3v5h-2v-5H8v-2h3V7z"/></svg>
+    </div>
+    <div>
+      <div class="title">MédTraduction V3</div>
+      <div class="subtitle">Mobile · lexique éditable · hors-ligne</div>
+    </div>
     <div class="badge">V3</div>
   </header>
 
@@ -75,11 +129,18 @@ body,input,textarea,select{font-size:16px}
   </nav>
 
   <main class="main">
-    <section class="tab active" id="tab-translate">
-      <div class="card banner"><div>⚠️</div><div>En cas d'urgence vitale, appelez le <strong>15</strong>. Cet outil soutient la communication mais ne remplace pas un interprète médical certifié.</div></div>
 
+    <!-- ══ TRADUIRE ══ -->
+    <section class="tab active" id="tab-translate">
+
+      <div class="card banner">
+        <div>⚠️</div>
+        <div>En cas d'urgence vitale, appelez le <strong>15</strong>. Cet outil soutient la communication mais ne remplace pas un interprète médical certifié.</div>
+      </div>
+
+      <!-- FIX #1 : lang-row au lieu de stack-row → reste horizontal sur mobile -->
       <div class="card">
-        <div class="stack-row">
+        <div class="lang-row">
           <select class="select" id="sourceLang">
             <option value="fr">Français</option>
             <option value="shi">Shimaoré</option>
@@ -102,18 +163,29 @@ body,input,textarea,select{font-size:16px}
       </div>
 
       <div class="grid-2">
-        <label class="card small"><span style="display:flex;gap:10px;align-items:flex-start"><input type="checkbox" id="formalMode"><span>Registre formel pour consultation et consentement.</span></span></label>
-        <label class="card small"><span style="display:flex;gap:10px;align-items:flex-start"><input type="checkbox" id="phoneticMode"><span>Ajouter une aide de prononciation si utile.</span></span></label>
+        <label class="card small">
+          <span style="display:flex;gap:10px;align-items:flex-start">
+            <input type="checkbox" id="formalMode">
+            <span>Registre formel pour consultation et consentement.</span>
+          </span>
+        </label>
+        <label class="card small">
+          <span style="display:flex;gap:10px;align-items:flex-start">
+            <input type="checkbox" id="phoneticMode">
+            <span>Ajouter une aide de prononciation si utile.</span>
+          </span>
+        </label>
       </div>
 
       <div class="toolbar">
         <button class="btn btn-primary" id="translateBtn">Traduire</button>
-        <button class="btn btn-secondary" id="speakSourceBtn">Lire source</button>
-        <button class="btn btn-secondary" id="speakResultBtn">Lire résultat</button>
+        <button class="btn btn-secondary" id="speakSourceBtn">🔊 Source</button>
+        <button class="btn btn-secondary" id="speakResultBtn">🔊 Résultat</button>
       </div>
 
       <div class="card">
         <div class="label"><span>Résultat</span><span id="resultMeta">—</span></div>
+        <!-- FIX #4 : setResult() corrigé, placeholder géré proprement -->
         <div class="result" id="resultBox"><span class="placeholder">La traduction apparaîtra ici.</span></div>
         <div class="toolbar" style="margin-top:12px">
           <button class="btn btn-ghost" id="copyBtn">Copier</button>
@@ -124,7 +196,7 @@ body,input,textarea,select{font-size:16px}
 
       <div class="card hidden" id="feedbackPanel">
         <div class="label"><span>Correction du sens</span><span id="feedbackPair">—</span></div>
-        <p class="small" style="margin-bottom:10px">Tu peux corriger la traduction entière. Elle sera ensuite réutilisée pour les entrées proches dans le même sens.</p>
+        <p class="small" style="margin-bottom:10px">Tu peux corriger la traduction entière. Elle sera réutilisée pour les entrées proches.</p>
         <textarea class="textarea small" id="correctedText" placeholder="Entre ici la bonne formulation."></textarea>
         <div class="toolbar" style="margin-top:12px">
           <button class="btn btn-primary" id="saveCorrectionBtn">Enregistrer</button>
@@ -132,23 +204,27 @@ body,input,textarea,select{font-size:16px}
         </div>
       </div>
 
-      <div class="card small" id="translateStatus">Tu peux traduire, corriger le sens, puis enrichir directement le lexique dans l'application.</div>
+      <div class="card small" id="translateStatus">
+        Tu peux traduire, corriger le sens, puis enrichir directement le lexique dans l'application.
+      </div>
+
     </section>
 
+    <!-- ══ LEXIQUE ══ -->
     <section class="tab" id="tab-lexicon">
       <div class="card">
         <div class="label"><span>Ajouter un mot ou une expression</span><span id="lexiconCount">0 entrées</span></div>
-        <p class="small" style="margin-bottom:12px">Cette zone est pensée pour le mobile : tu peux saisir directement un mot, un symptôme ou une phrase courte dans les 4 langues.</p>
+        <p class="small" style="margin-bottom:12px">Saisis un mot, un symptôme ou une phrase courte dans les 4 langues.</p>
         <div class="lang-grid">
-          <input class="input" id="lexFr" placeholder="Français : ex. douleur, ordonnance, perfusion">
-          <input class="input" id="lexShi" placeholder="Shimaoré">
-          <input class="input" id="lexGc" placeholder="Comorien">
-          <input class="input" id="lexAnj" placeholder="Anjouanais">
-          <input class="input" id="lexCategory" placeholder="Catégorie : douleur, consultation, traitement...">
+          <input class="input" id="lexFr"       placeholder="Français : ex. douleur, ordonnance, perfusion">
+          <input class="input" id="lexShi"      placeholder="Shimaoré">
+          <input class="input" id="lexGc"       placeholder="Comorien">
+          <input class="input" id="lexAnj"      placeholder="Anjouanais">
+          <input class="input" id="lexCategory" placeholder="Catégorie : douleur, consultation, traitement…">
         </div>
         <div class="toolbar" style="margin-top:12px">
           <button class="btn btn-primary" id="saveLexiconBtn">Ajouter au lexique</button>
-          <button class="btn btn-ghost" id="clearLexiconFormBtn">Vider</button>
+          <button class="btn btn-ghost"   id="clearLexiconFormBtn">Vider</button>
         </div>
       </div>
 
@@ -163,6 +239,7 @@ body,input,textarea,select{font-size:16px}
       </div>
     </section>
 
+    <!-- ══ PHRASIER ══ -->
     <section class="tab" id="tab-phrases">
       <div class="card">
         <div class="label"><span>Phrasier médical</span><span>Rapide</span></div>
@@ -170,25 +247,31 @@ body,input,textarea,select{font-size:16px}
       </div>
     </section>
 
+    <!-- ══ HISTORIQUE & RÉGLAGES ══ -->
     <section class="tab" id="tab-history">
       <div class="card">
         <div class="label"><span>Historique</span><span id="historyCount">0 élément</span></div>
-        <div class="toolbar" style="margin-bottom:12px"><button class="btn btn-danger" id="clearHistoryBtn">Effacer l'historique</button></div>
+        <div class="toolbar" style="margin-bottom:12px">
+          <button class="btn btn-danger" id="clearHistoryBtn">Effacer l'historique</button>
+        </div>
         <div id="historyList" class="list"></div>
       </div>
 
       <div class="card">
-        <div class="label"><span>Réglages rapides</span><span>Optionnel</span></div>
+        <div class="label"><span>Réglages rapides</span><span>Clé API</span></div>
+        <!-- stack-row ici s'empile volontairement sur mobile (input + bouton) -->
         <div class="stack-row">
-          <input class="input" id="apiKeyInput" type="password" placeholder="Clé API Anthropic (optionnelle)">
+          <input class="input" id="apiKeyInput" type="password" placeholder="Clé API Anthropic (sk-ant-…)">
           <button class="btn btn-primary" id="saveApiBtn">Sauver</button>
         </div>
         <div class="small" id="apiStatus" style="margin-top:10px"></div>
       </div>
     </section>
+
   </main>
 </div>
 
+<!-- ── STICKY MOBILE NAV ── -->
 <div class="sticky-mobile" aria-label="Navigation mobile">
   <button class="active" data-mobile-tab="translate">Traduire</button>
   <button data-mobile-tab="lexicon">Lexique</button>
@@ -197,125 +280,530 @@ body,input,textarea,select{font-size:16px}
 </div>
 
 <script>
+'use strict';
+
+// ═══════════════════════════════════════════════
+//  CONSTANTES
+// ═══════════════════════════════════════════════
 const LANG_NAMES = { fr:'Français', shi:'Shimaoré', gc:'Comorien (Shingazidja)', anj:'Anjouanais (Shindzuani)' };
 const PROMPTS = { fr:'le français', shi:'le shimaoré de Mayotte', gc:'le comorien shingazidja de Grande Comore', anj:"l'anjouanais shindzuani" };
 const STORAGE = {
-  api:'medtraduction_v3_api',
-  history:'medtraduction_v3_history',
-  offline:'medtraduction_v3_offline',
-  learning:'medtraduction_v3_learning'
+  api:      'medtraduction_v3_api',
+  history:  'medtraduction_v3_history',   // FIX #2 : renommé en interne
+  offline:  'medtraduction_v3_offline',
+  learning: 'medtraduction_v3_learning'
 };
+
 const OFFLINE_SEED = [
-  { fr:'douleur', shi:'maumivu', gc:'maumivu', anj:'maumivu', cat:'Douleur' },
-  { fr:'fièvre', shi:'homa', gc:'homa', anj:'homa', cat:'Symptômes' },
-  { fr:'allergie', shi:'aleji', gc:'aleji', anj:'aleji', cat:'Antécédents' },
-  { fr:'ordonnance', shi:'ordonnance', gc:'ordonnance', anj:'ordonnance', cat:'Traitement' },
-  { fr:'perfusions', shi:'perfusion', gc:'perfusion', anj:'perfusion', cat:'Soins' },
-  { fr:'Où avez-vous mal ?', shi:'U na maumivu wapi ?', gc:'Una maumivu hapi ?', anj:'Una maumivu hapi ?', cat:'Consultation' },
-  { fr:'Avez-vous du mal à respirer ?', shi:'Una shida ya kupumua ?', gc:'Una shida ya kuvuma ?', anj:'Una shida ya kuvuma ?', cat:'Urgence' },
-  { fr:'Avez-vous de la fièvre ?', shi:'Una homa ?', gc:'Una homa ?', anj:'Una homa ?', cat:'Consultation' },
-  { fr:'Êtes-vous allergique à un médicament ?', shi:'Una aleji na dawa ?', gc:'Una aleji na dawa ?', anj:'Una aleji na dawa ?', cat:'Consultation' }
+  { id:'s1',  fr:'douleur',                           shi:'maumivu',              gc:'maumivu',                 anj:'maumivu',              cat:'Douleur' },
+  { id:'s2',  fr:'fièvre',                            shi:'homa',                 gc:'homa',                    anj:'homa',                 cat:'Symptômes' },
+  { id:'s3',  fr:'allergie',                          shi:'aleji',                gc:'aleji',                   anj:'aleji',                cat:'Antécédents' },
+  { id:'s4',  fr:'ordonnance',                        shi:'ordonnance',           gc:'ordonnance',              anj:'ordonnance',           cat:'Traitement' },
+  { id:'s5',  fr:'perfusion',                         shi:'perfusion',            gc:'perfusion',               anj:'perfusion',            cat:'Soins' },
+  { id:'s6',  fr:'Où avez-vous mal ?',                shi:'U na maumivu wapi ?',  gc:'Una maumivu hapi ?',      anj:'Una maumivu hapi ?',   cat:'Consultation' },
+  { id:'s7',  fr:'Avez-vous du mal à respirer ?',     shi:'Una shida ya kupumua ?', gc:'Una shida ya kuvuma ?', anj:'Una shida ya kuvuma ?', cat:'Urgence' },
+  { id:'s8',  fr:'Avez-vous de la fièvre ?',          shi:'Una homa ?',           gc:'Una homa ?',              anj:'Una homa ?',           cat:'Consultation' },
+  { id:'s9',  fr:'Êtes-vous allergique à un médicament ?', shi:'Una aleji na dawa ?', gc:'Una aleji na dawa ?', anj:'Una aleji na dawa ?',  cat:'Consultation' }
 ];
+
 const PHRASES = [
-  {cat:'Urgences', items:['Appelez le 15 immédiatement.','Avez-vous du mal à respirer ?','Où avez-vous mal ?']},
-  {cat:'Consultation', items:['Pouvez-vous décrire vos symptômes ?','Avez-vous de la fièvre ?','Êtes-vous allergique à un médicament ?']},
-  {cat:'Traitement', items:['Prenez ce médicament matin et soir.','Buvez beaucoup d\'eau.','Revenez dans une semaine pour le suivi.']},
-  {cat:'Consentement', items:['Comprenez-vous ce que j\'ai expliqué ?','Acceptez-vous ce traitement ?','Avez-vous des questions ?']}
+  {cat:'Urgences',    items:['Appelez le 15 immédiatement.','Avez-vous du mal à respirer ?','Où avez-vous mal ?']},
+  {cat:'Consultation',items:['Pouvez-vous décrire vos symptômes ?','Avez-vous de la fièvre ?','Êtes-vous allergique à un médicament ?']},
+  {cat:'Traitement',  items:['Prenez ce médicament matin et soir.','Buvez beaucoup d\'eau.','Revenez dans une semaine pour le suivi.']},
+  {cat:'Consentement',items:['Comprenez-vous ce que j\'ai expliqué ?','Acceptez-vous ce traitement ?','Avez-vous des questions ?']}
 ];
+
+// ═══════════════════════════════════════════════
+//  ÉTAT — FIX #2 : "history" renommé en "translationHistory"
+//  (window.history est réservé au navigateur — le shadow provoquait des
+//   crashs silencieux sur Safari iOS)
+// ═══════════════════════════════════════════════
+let translationHistory = loadJSON(STORAGE.history, []);
+let offlineLibrary     = loadJSON(STORAGE.offline,  null);
+let learningMemory     = loadJSON(STORAGE.learning, []);
+let currentResult      = '';
+let currentSourceText  = '';
+let currentSourceLang  = 'fr';
+let currentTargetLang  = 'shi';
+let ttsVoices          = [];
+
+// Initialise offlineLibrary avec le seed si localStorage vide
+if (!Array.isArray(offlineLibrary)) {
+  offlineLibrary = OFFLINE_SEED.map(e => ({ ...e }));
+  saveJSON(STORAGE.offline, offlineLibrary);
+}
+// Garantit que chaque entrée a un id unique
+offlineLibrary.forEach((e, i) => { if (!e.id) e.id = 'e_' + Date.now() + '_' + i; });
+
+// ═══════════════════════════════════════════════
+//  REFS DOM
+// ═══════════════════════════════════════════════
 const els = {
-  tabs: document.querySelectorAll('[data-tab-btn]'), mobileTabs: document.querySelectorAll('[data-mobile-tab]'), tabViews: document.querySelectorAll('.tab'),
-  sourceLang: document.getElementById('sourceLang'), targetLang: document.getElementById('targetLang'), sourceText: document.getElementById('sourceText'), charCount: document.getElementById('charCount'),
-  translateBtn: document.getElementById('translateBtn'), resultBox: document.getElementById('resultBox'), resultMeta: document.getElementById('resultMeta'), translateStatus: document.getElementById('translateStatus'),
-  copyBtn: document.getElementById('copyBtn'), saveOfflineBtn: document.getElementById('saveOfflineBtn'), swapBtn: document.getElementById('swapBtn'),
-  speakSourceBtn: document.getElementById('speakSourceBtn'), speakResultBtn: document.getElementById('speakResultBtn'),
-  openFeedbackBtn: document.getElementById('openFeedbackBtn'), feedbackPanel: document.getElementById('feedbackPanel'), correctedText: document.getElementById('correctedText'), feedbackPair: document.getElementById('feedbackPair'), saveCorrectionBtn: document.getElementById('saveCorrectionBtn'), cancelFeedbackBtn: document.getElementById('cancelFeedbackBtn'),
-  lexFr: document.getElementById('lexFr'), lexShi: document.getElementById('lexShi'), lexGc: document.getElementById('lexGc'), lexAnj: document.getElementById('lexAnj'), lexCategory: document.getElementById('lexCategory'),
-  saveLexiconBtn: document.getElementById('saveLexiconBtn'), clearLexiconFormBtn: document.getElementById('clearLexiconFormBtn'), lexiconSearch: document.getElementById('lexiconSearch'), lexiconList: document.getElementById('lexiconList'), lexiconCount: document.getElementById('lexiconCount'), personalLexiconLabel: document.getElementById('personalLexiconLabel'),
-  phrasebook: document.getElementById('phrasebook'), historyList: document.getElementById('historyList'), historyCount: document.getElementById('historyCount'), clearHistoryBtn: document.getElementById('clearHistoryBtn'),
-  apiKeyInput: document.getElementById('apiKeyInput'), saveApiBtn: document.getElementById('saveApiBtn'), apiStatus: document.getElementById('apiStatus'), formalMode: document.getElementById('formalMode'), phoneticMode: document.getElementById('phoneticMode')
+  tabs:            document.querySelectorAll('[data-tab-btn]'),
+  mobileTabs:      document.querySelectorAll('[data-mobile-tab]'),
+  tabViews:        document.querySelectorAll('.tab'),
+  sourceLang:      document.getElementById('sourceLang'),
+  targetLang:      document.getElementById('targetLang'),
+  sourceText:      document.getElementById('sourceText'),
+  charCount:       document.getElementById('charCount'),
+  translateBtn:    document.getElementById('translateBtn'),
+  resultBox:       document.getElementById('resultBox'),
+  resultMeta:      document.getElementById('resultMeta'),
+  translateStatus: document.getElementById('translateStatus'),
+  copyBtn:         document.getElementById('copyBtn'),
+  saveOfflineBtn:  document.getElementById('saveOfflineBtn'),
+  swapBtn:         document.getElementById('swapBtn'),
+  speakSourceBtn:  document.getElementById('speakSourceBtn'),
+  speakResultBtn:  document.getElementById('speakResultBtn'),
+  openFeedbackBtn: document.getElementById('openFeedbackBtn'),
+  feedbackPanel:   document.getElementById('feedbackPanel'),
+  correctedText:   document.getElementById('correctedText'),
+  feedbackPair:    document.getElementById('feedbackPair'),
+  saveCorrectionBtn: document.getElementById('saveCorrectionBtn'),
+  cancelFeedbackBtn: document.getElementById('cancelFeedbackBtn'),
+  lexFr:           document.getElementById('lexFr'),
+  lexShi:          document.getElementById('lexShi'),
+  lexGc:           document.getElementById('lexGc'),
+  lexAnj:          document.getElementById('lexAnj'),
+  lexCategory:     document.getElementById('lexCategory'),
+  saveLexiconBtn:  document.getElementById('saveLexiconBtn'),
+  clearLexiconFormBtn: document.getElementById('clearLexiconFormBtn'),
+  lexiconSearch:   document.getElementById('lexiconSearch'),
+  lexiconList:     document.getElementById('lexiconList'),
+  lexiconCount:    document.getElementById('lexiconCount'),
+  personalLexiconLabel: document.getElementById('personalLexiconLabel'),
+  phrasebook:      document.getElementById('phrasebook'),
+  historyList:     document.getElementById('historyList'),
+  historyCount:    document.getElementById('historyCount'),
+  clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+  apiKeyInput:     document.getElementById('apiKeyInput'),
+  saveApiBtn:      document.getElementById('saveApiBtn'),
+  apiStatus:       document.getElementById('apiStatus'),
+  formalMode:      document.getElementById('formalMode'),
+  phoneticMode:    document.getElementById('phoneticMode')
 };
-let currentResult=''; let currentSourceText=''; let currentSourceLang='fr'; let currentTargetLang='shi';
-let history = loadJSON(STORAGE.history, []);
-let offlineLibrary = loadJSON(STORAGE.offline, OFFLINE_SEED);
-let learningMemory = loadJSON(STORAGE.learning, []);
 
-function loadJSON(key, fallback){ try{return JSON.parse(localStorage.getItem(key)) ?? fallback;}catch{return fallback;} }
-function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-function normalize(str){ return (str || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’']/g,"'").replace(/\s+/g,' '); }
-function similarity(a,b){ const aa=normalize(a), bb=normalize(b); if(!aa || !bb) return 0; if(aa===bb) return 1; if(aa.includes(bb) || bb.includes(aa)) return .88; const aw=aa.split(' '), bw=bb.split(' '); const common=aw.filter(w=>bw.includes(w)).length; return common / Math.max(aw.length,bw.length); }
-function updateCounter(){ els.charCount.textContent = `${els.sourceText.value.length} / 500`; }
-function setResult(text, meta='—'){ currentResult=text||''; els.resultMeta.textContent=meta; els.resultBox.innerHTML=text?'':'<span class="placeholder">La traduction apparaîtra ici.</span>'; if(text) els.resultBox.textContent=text; }
-function switchTab(name){ els.tabs.forEach(btn=>btn.classList.toggle('active', btn.dataset.tabBtn===name)); els.mobileTabs.forEach(btn=>btn.classList.toggle('active', btn.dataset.mobileTab===name)); els.tabViews.forEach(tab=>tab.classList.toggle('active', tab.id===`tab-${name}`)); }
-function clearLexiconForm(){ els.lexFr.value=''; els.lexShi.value=''; els.lexGc.value=''; els.lexAnj.value=''; els.lexCategory.value=''; }
-function swapLangs(){ const s=els.sourceLang.value; els.sourceLang.value=els.targetLang.value; els.targetLang.value=s; if(currentResult){ els.sourceText.value=currentResult; updateCounter(); setResult('', '—'); } }
-function addHistory(entry){ history.unshift({ ...entry, at:new Date().toLocaleString('fr-FR') }); history=history.slice(0,50); saveJSON(STORAGE.history, history); renderHistory(); }
-function findLearning(text, source, target){ const candidates=learningMemory.filter(item=>item.source===source && item.target===target); let best=null, scoreMax=0; candidates.forEach(item=>{ const s=similarity(text, item.input); if(s>scoreMax){ scoreMax=s; best=item; } }); return scoreMax >= .74 ? best : null; }
-function findLexiconTranslation(text, source, target){ const query=normalize(text); const exact=offlineLibrary.find(item => normalize(item[source])===query && item[target]); if(exact) return { text: exact[target], meta:'Lexique' }; let best=null, scoreMax=0; offlineLibrary.forEach(item=>{ const s=similarity(text, item[source] || ''); if(s>scoreMax && item[target]){ scoreMax=s; best=item; } }); return best && scoreMax>=.8 ? { text: best[target], meta:'Lexique proche' } : null; }
-async function onlineTranslate(text, source, target){ const apiKey=localStorage.getItem(STORAGE.api); if(!apiKey) throw new Error('NO_API'); const system=`Tu es un traducteur médical expert. Traduis de ${PROMPTS[source]} vers ${PROMPTS[target]}. Réponds uniquement par la traduction.${els.formalMode.checked?' Utilise un registre formel.':''}${els.phoneticMode.checked?' Ajoute une phonétique courte si utile.':''}`; const res=await fetch('https://api.anthropic.com/v1/messages',{ method:'POST', headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' }, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system, messages:[{role:'user', content:text}] }) }); const data=await res.json(); if(!res.ok) throw new Error(data.error?.message || 'API_ERROR'); return data.content?.[0]?.text?.trim() || ''; }
+// ═══════════════════════════════════════════════
+//  UTILITAIRES
+// ═══════════════════════════════════════════════
+function loadJSON(key, fallback) {
+  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function saveJSON(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) { console.warn('saveJSON:', e); }
+}
+function normalize(str) {
+  return (str || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['']/g, "'").replace(/\s+/g, ' ');
+}
+function similarity(a, b) {
+  const aa = normalize(a), bb = normalize(b);
+  if (!aa || !bb) return 0;
+  if (aa === bb) return 1;
+  if (aa.includes(bb) || bb.includes(aa)) return .88;
+  const aw = aa.split(' '), bw = bb.split(' ');
+  return aw.filter(w => bw.includes(w)).length / Math.max(aw.length, bw.length);
+}
+function genId() { return 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-async function loadBundledLexicon(){
+function updateCounter() { els.charCount.textContent = `${els.sourceText.value.length} / 500`; }
+
+// FIX #4 : setResult() — ordre innerHTML/textContent corrigé, pas de flash
+function setResult(text, meta = '—') {
+  currentResult = text || '';
+  els.resultMeta.textContent = meta;
+  if (text) {
+    els.resultBox.textContent = text;          // textContent avant tout
+  } else {
+    els.resultBox.innerHTML = '<span class="placeholder">La traduction apparaîtra ici.</span>';
+  }
+}
+
+function setStatus(msg) { els.translateStatus.textContent = msg; }
+
+function switchTab(name) {
+  els.tabs.forEach(b      => b.classList.toggle('active', b.dataset.tabBtn   === name));
+  els.mobileTabs.forEach(b => b.classList.toggle('active', b.dataset.mobileTab === name));
+  els.tabViews.forEach(t  => t.classList.toggle('active', t.id === `tab-${name}`));
+}
+function clearLexiconForm() { ['lexFr','lexShi','lexGc','lexAnj','lexCategory'].forEach(k => els[k].value = ''); }
+function swapLangs() {
+  const s = els.sourceLang.value;
+  els.sourceLang.value = els.targetLang.value;
+  els.targetLang.value = s;
+  if (currentResult) { els.sourceText.value = currentResult; updateCounter(); setResult(''); }
+}
+
+// ═══════════════════════════════════════════════
+//  HISTORIQUE — FIX #2 : utilise translationHistory
+// ═══════════════════════════════════════════════
+function addHistory(entry) {
+  translationHistory.unshift({ ...entry, at: new Date().toLocaleString('fr-FR') });
+  translationHistory = translationHistory.slice(0, 50);
+  saveJSON(STORAGE.history, translationHistory);
+  // ne re-render que si l'onglet est visible pour éviter du travail inutile
+}
+function renderHistory() {
+  const { length } = translationHistory;
+  els.historyCount.textContent = `${length} élément${length > 1 ? 's' : ''}`;
+  if (!length) { els.historyList.innerHTML = '<div class="item small">Aucune traduction enregistrée.</div>'; return; }
+  els.historyList.innerHTML = '';
+  translationHistory.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <h4>${esc(LANG_NAMES[item.source])} → ${esc(LANG_NAMES[item.target])}</h4>
+      <p class="small">${esc(item.sourceText)}</p>
+      <p style="margin-top:8px;color:var(--text)">${esc(item.resultText)}</p>
+      <div class="meta" style="margin-top:8px">${esc(item.at)} · ${esc(item.origin)}</div>
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn btn-ghost" data-reuse="${index}">Réutiliser</button>
+      </div>`;
+    els.historyList.appendChild(div);
+  });
+  els.historyList.querySelectorAll('[data-reuse]').forEach(btn => btn.addEventListener('click', () => {
+    const item = translationHistory[Number(btn.dataset.reuse)];
+    if (!item) return;
+    els.sourceLang.value = item.source; els.targetLang.value = item.target;
+    els.sourceText.value = item.sourceText; updateCounter();
+    setResult(item.resultText, item.origin); switchTab('translate');
+  }));
+}
+
+// ═══════════════════════════════════════════════
+//  LEXIQUE — FIX #5 : index via id unique, pas via JSON.stringify
+// ═══════════════════════════════════════════════
+function renderLexicon() {
+  const q = normalize(els.lexiconSearch.value);
+  const filtered = offlineLibrary.filter(item =>
+    !q || [item.fr, item.shi, item.gc, item.anj, item.cat].some(v => normalize(v).includes(q))
+  );
+  els.lexiconCount.textContent = `${offlineLibrary.length} entrée${offlineLibrary.length > 1 ? 's' : ''}`;
+  els.personalLexiconLabel.textContent = `${filtered.length} résultat${filtered.length > 1 ? 's' : ''}`;
+  if (!filtered.length) { els.lexiconList.innerHTML = '<div class="item small">Aucune entrée trouvée.</div>'; return; }
+  els.lexiconList.innerHTML = '';
+  filtered.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <h4>${esc(item.fr || item.shi || item.gc || item.anj || 'Entrée')}</h4>
+      <div class="meta">${esc(item.cat || 'Sans catégorie')}</div>
+      <div class="chips"><span class="chip">FR</span><span class="small"> ${esc(item.fr||'—')}</span></div>
+      <div class="chips"><span class="chip">SHI</span><span class="small"> ${esc(item.shi||'—')}</span></div>
+      <div class="chips"><span class="chip">GC</span><span class="small"> ${esc(item.gc||'—')}</span></div>
+      <div class="chips"><span class="chip">ANJ</span><span class="small"> ${esc(item.anj||'—')}</span></div>
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn btn-ghost"    data-edit-id="${esc(item.id)}">Modifier</button>
+        <button class="btn btn-danger"   data-del-id="${esc(item.id)}">Supprimer</button>
+        <button class="btn btn-secondary" data-use-id="${esc(item.id)}">Utiliser</button>
+      </div>`;
+    els.lexiconList.appendChild(div);
+  });
+
+  // Utiliser
+  els.lexiconList.querySelectorAll('[data-use-id]').forEach(btn => btn.addEventListener('click', () => {
+    const item = offlineLibrary.find(e => e.id === btn.dataset.useId); if (!item) return;
+    els.sourceLang.value = 'fr'; els.sourceText.value = item.fr || item.shi || item.gc || item.anj || '';
+    updateCounter(); switchTab('translate');
+  }));
+
+  // Modifier — charge dans le formulaire et retire de la liste (ré-ajout à la validation)
+  els.lexiconList.querySelectorAll('[data-edit-id]').forEach(btn => btn.addEventListener('click', () => {
+    const item = offlineLibrary.find(e => e.id === btn.dataset.editId); if (!item) return;
+    els.lexFr.value = item.fr||''; els.lexShi.value = item.shi||'';
+    els.lexGc.value = item.gc||''; els.lexAnj.value = item.anj||''; els.lexCategory.value = item.cat||'';
+    // Conserve l'id pour ré-insertion correcte
+    els.saveLexiconBtn.dataset.editingId = item.id;
+    offlineLibrary = offlineLibrary.filter(e => e.id !== item.id);
+    saveJSON(STORAGE.offline, offlineLibrary); renderLexicon();
+    setStatus('Entrée chargée. Modifie puis clique sur « Ajouter au lexique ».'); switchTab('lexicon');
+  }));
+
+  // Supprimer
+  els.lexiconList.querySelectorAll('[data-del-id]').forEach(btn => btn.addEventListener('click', () => {
+    offlineLibrary = offlineLibrary.filter(e => e.id !== btn.dataset.delId);
+    saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); setStatus('Entrée supprimée du lexique.');
+  }));
+}
+
+function saveLexiconEntry() {
+  const entry = {
+    id:  els.saveLexiconBtn.dataset.editingId || genId(),
+    fr:  els.lexFr.value.trim(), shi: els.lexShi.value.trim(),
+    gc:  els.lexGc.value.trim(), anj: els.lexAnj.value.trim(),
+    cat: els.lexCategory.value.trim() || 'Lexique personnel'
+  };
+  delete els.saveLexiconBtn.dataset.editingId;
+  if (!entry.fr && !entry.shi && !entry.gc && !entry.anj) {
+    setStatus('Ajoute au moins un mot ou une expression.'); return;
+  }
+  // Vérifie doublon sur les champs remplis (hors id)
+  const dup = offlineLibrary.find(item =>
+    ['fr','shi','gc','anj'].some(l => normalize(item[l]) && normalize(item[l]) === normalize(entry[l]))
+  );
+  if (dup) { Object.assign(dup, entry); }
+  else { offlineLibrary.unshift(entry); }
+  offlineLibrary = offlineLibrary.slice(0, 500);
+  saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); clearLexiconForm();
+  setStatus('Entrée ajoutée au lexique personnel.');
+}
+
+function saveOfflineCurrent() {
+  if (!currentResult || !currentSourceText) { setStatus('Aucune traduction à sauvegarder.'); return; }
+  const entry = { id:genId(), fr:'', shi:'', gc:'', anj:'', cat:'Ajout depuis traduction' };
+  entry[currentSourceLang] = currentSourceText; entry[currentTargetLang] = currentResult;
+  const exists = offlineLibrary.find(item =>
+    normalize(item[currentSourceLang]) === normalize(currentSourceText) &&
+    normalize(item[currentTargetLang]) === normalize(currentResult)
+  );
+  if (!exists) {
+    offlineLibrary.unshift(entry); offlineLibrary = offlineLibrary.slice(0, 500);
+    saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); setStatus('Traduction sauvegardée dans le lexique.');
+  } else { setStatus('Cette traduction est déjà dans le lexique.'); }
+}
+
+// ═══════════════════════════════════════════════
+//  APPRENTISSAGE
+// ═══════════════════════════════════════════════
+function findLearning(text, source, target) {
+  const candidates = learningMemory.filter(i => i.source === source && i.target === target);
+  let best = null, scoreMax = 0;
+  candidates.forEach(item => { const s = similarity(text, item.input); if (s > scoreMax) { scoreMax = s; best = item; } });
+  return scoreMax >= .74 ? best : null;
+}
+function findLexiconTranslation(text, source, target) {
+  const query = normalize(text);
+  const exact = offlineLibrary.find(item => normalize(item[source]) === query && item[target]);
+  if (exact) return { text: exact[target], meta: 'Lexique' };
+  let best = null, scoreMax = 0;
+  offlineLibrary.forEach(item => { const s = similarity(text, item[source] || ''); if (s > scoreMax && item[target]) { scoreMax = s; best = item; } });
+  return best && scoreMax >= .8 ? { text: best[target], meta: 'Lexique proche' } : null;
+}
+function openFeedback() {
+  if (!currentResult || !currentSourceText) { setStatus("Traduis d'abord une entrée avant de corriger le sens."); return; }
+  els.feedbackPair.textContent = `${LANG_NAMES[currentSourceLang]} → ${LANG_NAMES[currentTargetLang]}`;
+  els.correctedText.value = currentResult; els.feedbackPanel.classList.remove('hidden');
+}
+function saveCorrection() {
+  const corrected = els.correctedText.value.trim(); if (!corrected || !currentSourceText) return;
+  const existing = learningMemory.find(i =>
+    i.source === currentSourceLang && i.target === currentTargetLang && normalize(i.input) === normalize(currentSourceText)
+  );
+  if (existing) { existing.corrected = corrected; existing.at = new Date().toLocaleString('fr-FR'); }
+  else { learningMemory.unshift({ source:currentSourceLang, target:currentTargetLang, input:currentSourceText, corrected, at:new Date().toLocaleString('fr-FR') }); }
+  learningMemory = learningMemory.slice(0, 120); saveJSON(STORAGE.learning, learningMemory);
+  setResult(corrected, 'Correction apprise');
+  addHistory({ source:currentSourceLang, target:currentTargetLang, sourceText:currentSourceText, resultText:corrected, origin:'Correction utilisateur' });
+  els.feedbackPanel.classList.add('hidden');
+  setStatus('Correction enregistrée. Elle sera réutilisée pour les prochaines traductions proches.');
+}
+
+// ═══════════════════════════════════════════════
+//  TTS — FIX #3 : fallback automatique sur fr-FR si voix 'sw' introuvable
+// ═══════════════════════════════════════════════
+function getBestVoice(langCode) {
+  if (!ttsVoices.length) ttsVoices = speechSynthesis.getVoices();
+  // Langues comoriennes : essaie sw (swahili) puis fr-FR comme approximation phonétique
+  const candidates = langCode === 'fr' ? ['fr-FR','fr'] : ['sw','sw-KE','sw-TZ','fr-FR','fr'];
+  for (const code of candidates) {
+    const v = ttsVoices.find(voice => voice.lang.toLowerCase().startsWith(code.toLowerCase().slice(0,2)));
+    if (v) return v;
+  }
+  return ttsVoices[0] || null; // dernier recours
+}
+function speak(text, langCode) {
+  if (!('speechSynthesis' in window) || !text) {
+    setStatus('Synthèse vocale non disponible sur cet appareil.'); return;
+  }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  const voice = getBestVoice(langCode);
+  if (voice) utter.voice = voice;
+  utter.lang = langCode === 'fr' ? 'fr-FR' : (voice ? voice.lang : 'fr-FR');
+  utter.rate = langCode === 'fr' ? .95 : .82; // plus lent pour les langues comoriennes
+  speechSynthesis.speak(utter);
+}
+
+// ═══════════════════════════════════════════════
+//  API CLAUDE
+// ═══════════════════════════════════════════════
+async function onlineTranslate(text, source, target) {
+  const apiKey = localStorage.getItem(STORAGE.api);
+  if (!apiKey) throw new Error('NO_API');
+  const system = `Tu es un traducteur médical expert. Traduis de ${PROMPTS[source]} vers ${PROMPTS[target]}. Réponds uniquement par la traduction.${els.formalMode.checked ? ' Utilise un registre formel.' : ''}${els.phoneticMode.checked ? ' Ajoute une phonétique courte si utile.' : ''}`;
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 700,
+      system,
+      messages: [{ role: 'user', content: text }]
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'API_ERROR');
+  return data.content?.[0]?.text?.trim() || '';
+}
+
+// ═══════════════════════════════════════════════
+//  PHRASIER
+// ═══════════════════════════════════════════════
+function renderPhrasebook() {
+  els.phrasebook.innerHTML = '';
+  PHRASES.forEach(group => {
+    const block = document.createElement('div'); block.className = 'item';
+    block.innerHTML = `<h4>${esc(group.cat)}</h4>`;
+    group.items.forEach(text => {
+      const b = document.createElement('button');
+      b.className = 'btn btn-ghost'; b.style.cssText = 'width:100%;text-align:left;margin-top:8px';
+      b.textContent = text;
+      b.addEventListener('click', () => {
+        els.sourceLang.value = 'fr'; els.sourceText.value = text;
+        updateCounter(); switchTab('translate');
+      });
+      block.appendChild(b);
+    });
+    els.phrasebook.appendChild(block);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  CHARGEMENT LEXIQUE EXTERNE (optionnel)
+//  FIX : le fichier JSON est optionnel — l'absence ne génère plus d'erreur console
+// ═══════════════════════════════════════════════
+async function loadBundledLexicon() {
+  // Décommente la ligne suivante si tu fournis le fichier JSON sur ton serveur :
+  // const LEXICON_URL = './lexique-medtraduction-base.json';
+  const LEXICON_URL = null; // pas de fichier → on saute silencieusement
+  if (!LEXICON_URL) return;
   try {
-    const response = await fetch('./lexique-medtraduction-base.json', { cache: 'no-store' });
+    const response = await fetch(LEXICON_URL, { cache: 'no-store' });
     if (!response.ok) return;
     const data = await response.json();
     if (!Array.isArray(data)) return;
     let changed = false;
     data.forEach(entry => {
-      const cleanEntry = {
-        fr: (entry.fr || '').toString().trim(),
-        shi: (entry.shi || '').toString().trim(),
-        gc: (entry.gc || '').toString().trim(),
-        anj: (entry.anj || '').toString().trim(),
+      const clean = {
+        id:  genId(),
+        fr:  (entry.fr  || '').toString().trim(), shi: (entry.shi || '').toString().trim(),
+        gc:  (entry.gc  || '').toString().trim(), anj: (entry.anj || '').toString().trim(),
         cat: (entry.cat || 'Lexique importé').toString().trim()
       };
-      if (!cleanEntry.fr && !cleanEntry.shi && !cleanEntry.gc && !cleanEntry.anj) return;
-      const duplicate = offlineLibrary.find(item => ['fr','shi','gc','anj'].some(lang => normalize(item[lang]) && normalize(item[lang]) === normalize(cleanEntry[lang])));
-      if (duplicate) {
-        Object.assign(duplicate, { ...duplicate, ...cleanEntry });
-        changed = true;
-      } else {
-        offlineLibrary.unshift(cleanEntry);
-        changed = true;
-      }
+      if (!clean.fr && !clean.shi && !clean.gc && !clean.anj) return;
+      const dup = offlineLibrary.find(item =>
+        ['fr','shi','gc','anj'].some(l => normalize(item[l]) && normalize(item[l]) === normalize(clean[l]))
+      );
+      if (dup) { Object.assign(dup, clean); changed = true; }
+      else { offlineLibrary.unshift(clean); changed = true; }
     });
-    if (changed) {
-      offlineLibrary = offlineLibrary.slice(0, 500);
-      saveJSON(STORAGE.offline, offlineLibrary);
-      renderLexicon();
-    }
-  } catch (error) {
-    console.warn('Chargement automatique du lexique impossible', error);
-  }
+    if (changed) { offlineLibrary = offlineLibrary.slice(0, 500); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); }
+  } catch { /* fichier absent ou malformé — ignoré */ }
 }
 
-function renderPhrasebook(){ els.phrasebook.innerHTML=''; PHRASES.forEach(group=>{ const block=document.createElement('div'); block.className='item'; block.innerHTML=`<h4>${group.cat}</h4>`; group.items.forEach(text=>{ const b=document.createElement('button'); b.className='btn btn-ghost'; b.style.width='100%'; b.style.textAlign='left'; b.style.marginTop='8px'; b.textContent=text; b.onclick=()=>{ els.sourceLang.value='fr'; els.sourceText.value=text; updateCounter(); switchTab('translate'); }; block.appendChild(b); }); els.phrasebook.appendChild(block); }); }
-function renderHistory(){ els.historyCount.textContent=`${history.length} élément${history.length>1?'s':''}`; els.historyList.innerHTML=history.length?'':'<div class="item small">Aucune traduction enregistrée.</div>'; history.forEach((item,index)=>{ const div=document.createElement('div'); div.className='item'; div.innerHTML=`<h4>${LANG_NAMES[item.source]} → ${LANG_NAMES[item.target]}</h4><p>${item.sourceText}</p><p style="margin-top:8px;color:var(--text)">${item.resultText}</p><div class="meta" style="margin-top:8px">${item.at} · ${item.origin}</div><div class="toolbar" style="margin-top:10px"><button class="btn btn-ghost" data-reuse="${index}">Réutiliser</button></div>`; els.historyList.appendChild(div); }); els.historyList.querySelectorAll('[data-reuse]').forEach(btn=>btn.onclick=()=>{ const item=history[Number(btn.dataset.reuse)]; els.sourceLang.value=item.source; els.targetLang.value=item.target; els.sourceText.value=item.sourceText; updateCounter(); setResult(item.resultText, item.origin); switchTab('translate'); }); }
-function renderLexicon(){ const q=normalize(els.lexiconSearch.value); const filtered=offlineLibrary.filter(item => !q || [item.fr,item.shi,item.gc,item.anj,item.cat].some(v => normalize(v).includes(q))); els.lexiconCount.textContent=`${offlineLibrary.length} entrées`; els.personalLexiconLabel.textContent=`${filtered.length} résultat${filtered.length>1?'s':''}`; els.lexiconList.innerHTML=filtered.length?'':'<div class="item small">Aucune entrée trouvée.</div>'; filtered.forEach((item,index)=>{ const div=document.createElement('div'); div.className='item'; div.innerHTML=`<h4>${item.fr || item.shi || item.gc || item.anj || 'Entrée'}</h4><div class="meta">${item.cat || 'Sans catégorie'}</div><div class="chips"><span class="chip">FR</span><span class="small">${item.fr || '—'}</span></div><div class="chips"><span class="chip">SHI</span><span class="small">${item.shi || '—'}</span></div><div class="chips"><span class="chip">GC</span><span class="small">${item.gc || '—'}</span></div><div class="chips"><span class="chip">ANJ</span><span class="small">${item.anj || '—'}</span></div><div class="toolbar" style="margin-top:10px"><button class="btn btn-ghost" data-edit="${index}">Modifier</button><button class="btn btn-danger" data-delete="${index}">Supprimer</button><button class="btn btn-secondary" data-use="${index}">Utiliser</button></div>`; els.lexiconList.appendChild(div); }); els.lexiconList.querySelectorAll('[data-use]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.use)]; els.sourceLang.value='fr'; els.sourceText.value=item.fr || item.shi || item.gc || item.anj || ''; updateCounter(); switchTab('translate'); }); els.lexiconList.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.edit)]; els.lexFr.value=item.fr||''; els.lexShi.value=item.shi||''; els.lexGc.value=item.gc||''; els.lexAnj.value=item.anj||''; els.lexCategory.value=item.cat||''; const realIndex=offlineLibrary.findIndex(entry => JSON.stringify(entry)===JSON.stringify(item)); if(realIndex>=0){ offlineLibrary.splice(realIndex,1); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); els.translateStatus.textContent='Entrée chargée dans le formulaire. Modifie puis enregistre à nouveau.'; switchTab('lexicon'); } }); els.lexiconList.querySelectorAll('[data-delete]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.delete)]; const realIndex=offlineLibrary.findIndex(entry => JSON.stringify(entry)===JSON.stringify(item)); if(realIndex>=0){ offlineLibrary.splice(realIndex,1); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); els.translateStatus.textContent='Entrée supprimée du lexique.'; } }); }
-function saveLexiconEntry(){ const entry={ fr:els.lexFr.value.trim(), shi:els.lexShi.value.trim(), gc:els.lexGc.value.trim(), anj:els.lexAnj.value.trim(), cat:els.lexCategory.value.trim() || 'Lexique personnel' }; if(!entry.fr && !entry.shi && !entry.gc && !entry.anj){ els.translateStatus.textContent='Ajoute au moins un mot ou une expression.'; return; } const duplicate=offlineLibrary.find(item => ['fr','shi','gc','anj'].some(lang => normalize(item[lang]) && normalize(item[lang]) === normalize(entry[lang]))); if(duplicate){ Object.assign(duplicate, { ...duplicate, ...entry }); } else { offlineLibrary.unshift(entry); } offlineLibrary=offlineLibrary.slice(0,200); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); clearLexiconForm(); els.translateStatus.textContent='Entrée ajoutée au lexique personnel.'; }
-function saveOfflineCurrent(){ if(!currentResult || !currentSourceText) return; const entry={ fr:'', shi:'', gc:'', anj:'', cat:'Ajout depuis traduction' }; entry[currentSourceLang]=currentSourceText; entry[currentTargetLang]=currentResult; const existing=offlineLibrary.find(item => normalize(item[currentSourceLang])===normalize(currentSourceText) && normalize(item[currentTargetLang])===normalize(currentResult)); if(!existing){ offlineLibrary.unshift(entry); offlineLibrary=offlineLibrary.slice(0,200); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); els.translateStatus.textContent='Traduction sauvegardée dans le lexique.'; } }
-function openFeedback(){ if(!currentResult || !currentSourceText){ els.translateStatus.textContent='Traduis d’abord une entrée avant de corriger le sens.'; return; } els.feedbackPair.textContent=`${LANG_NAMES[currentSourceLang]} → ${LANG_NAMES[currentTargetLang]}`; els.correctedText.value=currentResult; els.feedbackPanel.classList.remove('hidden'); }
-function saveCorrection(){ const corrected=els.correctedText.value.trim(); if(!corrected || !currentSourceText) return; const existing=learningMemory.find(item => item.source===currentSourceLang && item.target===currentTargetLang && normalize(item.input)===normalize(currentSourceText)); if(existing){ existing.corrected=corrected; existing.at=new Date().toLocaleString('fr-FR'); } else { learningMemory.unshift({ source:currentSourceLang, target:currentTargetLang, input:currentSourceText, corrected, at:new Date().toLocaleString('fr-FR') }); } learningMemory=learningMemory.slice(0,120); saveJSON(STORAGE.learning, learningMemory); setResult(corrected, 'Correction apprise'); addHistory({ source:currentSourceLang, target:currentTargetLang, sourceText:currentSourceText, resultText:corrected, origin:'Correction utilisateur' }); els.feedbackPanel.classList.add('hidden'); els.translateStatus.textContent='Correction enregistrée. Elle sera réutilisée pour les prochaines traductions proches.'; }
-function speak(text, langCode){ if(!('speechSynthesis' in window) || !text){ els.translateStatus.textContent='Synthèse vocale non disponible sur cet appareil.'; return; } speechSynthesis.cancel(); const utter=new SpeechSynthesisUtterance(text); utter.lang=({fr:'fr-FR', shi:'sw', gc:'sw', anj:'sw'})[langCode] || 'fr-FR'; utter.rate=.95; speechSynthesis.speak(utter); }
-
-els.tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tabBtn)));
-els.mobileTabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.mobileTab)));
+// ═══════════════════════════════════════════════
+//  ÉVÉNEMENTS
+// ═══════════════════════════════════════════════
+els.tabs.forEach(btn       => btn.addEventListener('click', () => switchTab(btn.dataset.tabBtn)));
+els.mobileTabs.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.mobileTab)));
 els.sourceText.addEventListener('input', updateCounter);
 els.swapBtn.addEventListener('click', swapLangs);
-els.copyBtn.addEventListener('click', async()=>{ if(!currentResult) return; await navigator.clipboard.writeText(currentResult); els.translateStatus.textContent='Traduction copiée.'; });
+els.copyBtn.addEventListener('click', async () => {
+  if (!currentResult) { setStatus('Aucun résultat à copier.'); return; }
+  try { await navigator.clipboard.writeText(currentResult); setStatus('Traduction copiée.'); }
+  catch { setStatus('Copie non disponible — sélectionne le texte manuellement.'); }
+});
 els.saveOfflineBtn.addEventListener('click', saveOfflineCurrent);
 els.openFeedbackBtn.addEventListener('click', openFeedback);
-els.cancelFeedbackBtn.addEventListener('click', ()=>els.feedbackPanel.classList.add('hidden'));
+els.cancelFeedbackBtn.addEventListener('click', () => els.feedbackPanel.classList.add('hidden'));
 els.saveCorrectionBtn.addEventListener('click', saveCorrection);
 els.saveLexiconBtn.addEventListener('click', saveLexiconEntry);
 els.clearLexiconFormBtn.addEventListener('click', clearLexiconForm);
 els.lexiconSearch.addEventListener('input', renderLexicon);
-els.clearHistoryBtn.addEventListener('click', ()=>{ history=[]; saveJSON(STORAGE.history, history); renderHistory(); });
-els.saveApiBtn.addEventListener('click', ()=>{ const key=els.apiKeyInput.value.trim(); if(!key.startsWith('sk-ant-')){ els.apiStatus.textContent='Format invalide : la clé doit commencer par sk-ant-'; return; } localStorage.setItem(STORAGE.api, key); els.apiStatus.textContent='Clé API enregistrée sur cet appareil.'; els.apiKeyInput.value=''; });
-els.speakSourceBtn.addEventListener('click', ()=>speak(els.sourceText.value.trim(), els.sourceLang.value));
-els.speakResultBtn.addEventListener('click', ()=>speak(currentResult.trim(), els.targetLang.value));
-els.translateBtn.addEventListener('click', async()=>{ const text=els.sourceText.value.trim(); if(!text){ els.translateStatus.textContent='Saisis un mot ou une phrase à traduire.'; return; } const source=els.sourceLang.value, target=els.targetLang.value; currentSourceText=text; currentSourceLang=source; currentTargetLang=target; if(source===target){ setResult(text,'Même langue'); return; } els.translateBtn.disabled=true; els.translateStatus.textContent='Recherche de traduction…'; try{ const learned=findLearning(text, source, target); if(learned){ setResult(learned.corrected, 'Correction apprise'); addHistory({ source, target, sourceText:text, resultText:learned.corrected, origin:'Correction apprise' }); els.translateStatus.textContent='Une correction mémorisée a été appliquée.'; } else { const local=findLexiconTranslation(text, source, target); if(local){ setResult(local.text, local.meta); addHistory({ source, target, sourceText:text, resultText:local.text, origin:local.meta }); els.translateStatus.textContent='Traduction trouvée dans le lexique local.'; } else { const online=await onlineTranslate(text, source, target); if(!online) throw new Error('EMPTY_RESULT'); setResult(online, 'En ligne'); addHistory({ source, target, sourceText:text, resultText:online, origin:'En ligne' }); els.translateStatus.textContent='Traduction en ligne terminée.'; } } } catch(error){ setResult('', 'Erreur'); els.translateStatus.textContent = error.message==='NO_API' ? 'Pas de clé API configurée. Utilise ou enrichis le lexique local directement dans l’application.' : 'Impossible de traduire en ligne pour le moment.'; } finally { els.translateBtn.disabled=false; } });
+els.clearHistoryBtn.addEventListener('click', () => {
+  if (!confirm('Effacer tout l\'historique ?')) return;
+  translationHistory = []; saveJSON(STORAGE.history, translationHistory); renderHistory();
+});
+els.saveApiBtn.addEventListener('click', () => {
+  const key = els.apiKeyInput.value.trim();
+  if (!key.startsWith('sk-ant-')) { els.apiStatus.textContent = 'Format invalide : la clé doit commencer par sk-ant-'; return; }
+  localStorage.setItem(STORAGE.api, key); els.apiStatus.textContent = 'Clé API enregistrée sur cet appareil.'; els.apiKeyInput.value = '';
+});
+els.speakSourceBtn.addEventListener('click', () => speak(els.sourceText.value.trim(), els.sourceLang.value));
+els.speakResultBtn.addEventListener('click', () => speak(currentResult, els.targetLang.value));
 
-(function init(){ updateCounter(); renderPhrasebook(); renderHistory(); renderLexicon(); loadBundledLexicon(); if(localStorage.getItem(STORAGE.api)){ els.apiStatus.textContent='Clé API déjà configurée sur cet appareil.'; } if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); } })();
+// Charger les voix TTS dès qu'elles sont disponibles (nécessaire sur Chrome/iOS)
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => { ttsVoices = speechSynthesis.getVoices(); };
+}
+
+// ═══════════════════════════════════════════════
+//  TRADUCTION PRINCIPALE
+// ═══════════════════════════════════════════════
+els.translateBtn.addEventListener('click', async () => {
+  const text   = els.sourceText.value.trim();
+  const source = els.sourceLang.value;
+  const target = els.targetLang.value;
+  if (!text)           { setStatus('Saisis un mot ou une phrase à traduire.'); return; }
+  if (source === target){ setResult(text, 'Même langue'); return; }
+
+  currentSourceText = text; currentSourceLang = source; currentTargetLang = target;
+  els.translateBtn.disabled = true; setStatus('Recherche de traduction…');
+
+  try {
+    const learned = findLearning(text, source, target);
+    if (learned) {
+      setResult(learned.corrected, 'Correction apprise');
+      addHistory({ source, target, sourceText:text, resultText:learned.corrected, origin:'Correction apprise' });
+      setStatus('Une correction mémorisée a été appliquée.');
+      return;
+    }
+    const local = findLexiconTranslation(text, source, target);
+    if (local) {
+      setResult(local.text, local.meta);
+      addHistory({ source, target, sourceText:text, resultText:local.text, origin:local.meta });
+      setStatus('Traduction trouvée dans le lexique local.');
+      return;
+    }
+    const online = await onlineTranslate(text, source, target);
+    if (!online) throw new Error('EMPTY_RESULT');
+    setResult(online, 'En ligne');
+    addHistory({ source, target, sourceText:text, resultText:online, origin:'En ligne' });
+    setStatus('Traduction en ligne terminée.');
+  } catch (error) {
+    setResult('');
+    setStatus(
+      error.message === 'NO_API'
+        ? 'Pas de clé API configurée. Utilise le lexique local ou configure ta clé dans l\'onglet Historique.'
+        : 'Impossible de traduire en ligne. Vérifie ta connexion ou ta clé API.'
+    );
+  } finally {
+    els.translateBtn.disabled = false;
+  }
+});
+
+// ═══════════════════════════════════════════════
+//  INITIALISATION
+// ═══════════════════════════════════════════════
+(function init() {
+  updateCounter();
+  renderPhrasebook();
+  renderHistory();
+  renderLexicon();
+  loadBundledLexicon();
+  if (localStorage.getItem(STORAGE.api)) { els.apiStatus.textContent = 'Clé API déjà configurée sur cet appareil.'; }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  }
+})();
 </script>
 </body>
 </html>
