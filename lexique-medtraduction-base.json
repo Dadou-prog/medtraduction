@@ -1,0 +1,250 @@
+[
+  {
+    "fr": "bonjour",
+    "shi": "Gégé",
+    "gc": "Bonjour",
+    "anj": "Bonjour",
+    "cat": "Salutations",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "comment ça va ?",
+    "shi": "Wafétché ? / Gégé ?",
+    "gc": "Habari ?",
+    "anj": "Habari ?",
+    "cat": "Salutations",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "je vais bien",
+    "shi": "Tsa fétché",
+    "gc": "Niko sawa",
+    "anj": "Niko sawa",
+    "cat": "Salutations",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "merci",
+    "shi": "Marahaba",
+    "gc": "Marahaba",
+    "anj": "Marahaba",
+    "cat": "Salutations",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "s'il vous plaît",
+    "shi": "Tafadali",
+    "gc": "Tafadali",
+    "anj": "Tafadali",
+    "cat": "Salutations",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "je comprends",
+    "shi": "Tsi héléwa",
+    "gc": "Naelewa",
+    "anj": "Naelewa",
+    "cat": "Communication",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "je ne comprends pas",
+    "shi": "Tsa héléwa",
+    "gc": "Sielewi",
+    "anj": "Sielewi",
+    "cat": "Communication",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "oui",
+    "shi": "Ewa",
+    "gc": "Ewa",
+    "anj": "Ewa",
+    "cat": "Communication",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "non",
+    "shi": "Anhan",
+    "gc": "Aha",
+    "anj": "Aha",
+    "cat": "Communication",
+    "source": "tourisme-petiteterre.fr"
+  },
+  {
+    "fr": "où avez-vous mal ?",
+    "shi": "U na maumivu wapi ?",
+    "gc": "Una maumivu hapi ?",
+    "anj": "Una maumivu hapi ?",
+    "cat": "Douleur",
+    "source": "base app + traducteurs médicaux"
+  },
+  {
+    "fr": "avez-vous mal quelque part ?",
+    "shi": "U na maumivu mahali ?",
+    "gc": "Una maumivu mahali ?",
+    "anj": "Una maumivu mahali ?",
+    "cat": "Douleur",
+    "source": "traducmed"
+  },
+  {
+    "fr": "montrez-moi où vous avez mal",
+    "shi": "Nionyeshe wapi una maumivu",
+    "gc": "Nionyeshe hapi una maumivu",
+    "anj": "Nionyeshe hapi una maumivu",
+    "cat": "Douleur",
+    "source": "traducmed"
+  },
+  {
+    "fr": "douleur",
+    "shi": "maumivu",
+    "gc": "maumivu",
+    "anj": "maumivu",
+    "cat": "Douleur",
+    "source": "lexique courant"
+  },
+  {
+    "fr": "fièvre",
+    "shi": "homa",
+    "gc": "homa",
+    "anj": "homa",
+    "cat": "Symptômes",
+    "source": "lexique courant"
+  },
+  {
+    "fr": "avez-vous de la fièvre ?",
+    "shi": "Una homa ?",
+    "gc": "Una homa ?",
+    "anj": "Una homa ?",
+    "cat": "Symptômes",
+    "source": "traducmed"
+  },
+  {
+    "fr": "avez-vous mal à la gorge ?",
+    "shi": "Una maumivu ya koo ?",
+    "gc": "Una maumivu ya koo ?",
+    "anj": "Una maumivu ya koo ?",
+    "cat": "Symptômes",
+    "source": "traducmed"
+  },
+  {
+    "fr": "avez-vous du mal à respirer ?",
+    "shi": "Una shida ya kupumua ?",
+    "gc": "Una shida ya kuvuma ?",
+    "anj": "Una shida ya kuvuma ?",
+    "cat": "Urgence",
+    "source": "traducmed"
+  },
+  {
+    "fr": "respirez profondément",
+    "shi": "Pumua kwa kina",
+    "gc": "Vuma kwa undani",
+    "anj": "Vuma kwa undani",
+    "cat": "Examen clinique",
+    "source": "traducmed"
+  },
+  {
+    "fr": "ne respirez plus",
+    "shi": "Usipumue tena",
+    "gc": "Usivume tena",
+    "anj": "Usivume tena",
+    "cat": "Examen clinique",
+    "source": "traducmed"
+  },
+  {
+    "fr": "je vais vous examiner",
+    "shi": "Nitakuchunguza",
+    "gc": "Nitakuchunguza",
+    "anj": "Nitakuchunguza",
+    "cat": "Examen clinique",
+    "source": "traducmed"
+  },
+  {
+    "fr": "je suis infirmier",
+    "shi": "Mimi ni infirmier",
+    "gc": "Mimi ni infirmier",
+    "anj": "Mimi ni infirmier",
+    "cat": "Présentation",
+    "source": "traducmed"
+  },
+  {
+    "fr": "je suis médecin",
+    "shi": "Mimi ni daktari",
+    "gc": "Mimi ni daktari",
+    "anj": "Mimi ni daktari",
+    "cat": "Présentation",
+    "source": "traducmed"
+  },
+  {
+    "fr": "répondez par oui ou par non",
+    "shi": "Jibu kwa ndio au hapana",
+    "gc": "Jibu kwa ndiyo au hapana",
+    "anj": "Jibu kwa ndiyo au hapana",
+    "cat": "Communication",
+    "source": "traducmed"
+  },
+  {
+    "fr": "êtes-vous allergique à un médicament ?",
+    "shi": "Una aleji na dawa ?",
+    "gc": "Una aleji na dawa ?",
+    "anj": "Una aleji na dawa ?",
+    "cat": "Antécédents",
+    "source": "traducmed"
+  },
+  {
+    "fr": "prenez-vous des médicaments ?",
+    "shi": "Unatumia dawa ?",
+    "gc": "Unatumia dawa ?",
+    "anj": "Unatumia dawa ?",
+    "cat": "Traitement",
+    "source": "traducmed"
+  },
+  {
+    "fr": "prenez ce médicament matin et soir",
+    "shi": "Ndzwa dawa hi asubuhi na jioni",
+    "gc": "Ndrwa dawa asubuhi na jioni",
+    "anj": "Ndrwa dawa asubuhi na jioni",
+    "cat": "Traitement",
+    "source": "base app"
+  },
+  {
+    "fr": "buvez beaucoup d'eau",
+    "shi": "Unywe maji mengi",
+    "gc": "Unywa maji mengi",
+    "anj": "Unywa maji mengi",
+    "cat": "Traitement",
+    "source": "base app"
+  },
+  {
+    "fr": "revenez dans une semaine pour le suivi",
+    "shi": "Rudi baada ya wiki moja kwa ufuatiliaji",
+    "gc": "Rudi bada ya wiki moja kwa ufuatiliaji",
+    "anj": "Rudi bada ya wiki moya kwa ufuatiliaji",
+    "cat": "Suivi",
+    "source": "base app"
+  },
+  {
+    "fr": "comprenez-vous ce que j'ai expliqué ?",
+    "shi": "Umeelewa nilichokueleza ?",
+    "gc": "Umefahamu ndziro eleza ?",
+    "anj": "Umefahamu ndziro eleza ?",
+    "cat": "Consentement",
+    "source": "base app"
+  },
+  {
+    "fr": "acceptez-vous ce traitement ?",
+    "shi": "Unakubali matibabu haya ?",
+    "gc": "Ukubali matibabu haya ?",
+    "anj": "Ukubali matibabu haya ?",
+    "cat": "Consentement",
+    "source": "base app"
+  },
+  {
+    "fr": "avez-vous des questions ?",
+    "shi": "Una maswali ?",
+    "gc": "Una masuali ?",
+    "anj": "Una masuali ?",
+    "cat": "Consentement",
+    "source": "traducmed"
+  }
+]
