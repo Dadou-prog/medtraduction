@@ -251,17 +251,15 @@ function swapLangs(){ const s=els.sourceLang.value; els.sourceLang.value=els.tar
 function addHistory(entry){ history.unshift({ ...entry, at:new Date().toLocaleString('fr-FR') }); history=history.slice(0,50); saveJSON(STORAGE.history, history); renderHistory(); }
 function findLearning(text, source, target){ const candidates=learningMemory.filter(item=>item.source===source && item.target===target); let best=null, scoreMax=0; candidates.forEach(item=>{ const s=similarity(text, item.input); if(s>scoreMax){ scoreMax=s; best=item; } }); return scoreMax >= .74 ? best : null; }
 function findLexiconTranslation(text, source, target){ const query=normalize(text); const exact=offlineLibrary.find(item => normalize(item[source])===query && item[target]); if(exact) return { text: exact[target], meta:'Lexique' }; let best=null, scoreMax=0; offlineLibrary.forEach(item=>{ const s=similarity(text, item[source] || ''); if(s>scoreMax && item[target]){ scoreMax=s; best=item; } }); return best && scoreMax>=.8 ? { text: best[target], meta:'Lexique proche' } : null; }
+async function onlineTranslate(text, source, target){ const apiKey=localStorage.getItem(STORAGE.api); if(!apiKey) throw new Error('NO_API'); const system=`Tu es un traducteur médical expert. Traduis de ${PROMPTS[source]} vers ${PROMPTS[target]}. Réponds uniquement par la traduction.${els.formalMode.checked?' Utilise un registre formel.':''}${els.phoneticMode.checked?' Ajoute une phonétique courte si utile.':''}`; const res=await fetch('https://api.anthropic.com/v1/messages',{ method:'POST', headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' }, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system, messages:[{role:'user', content:text}] }) }); const data=await res.json(); if(!res.ok) throw new Error(data.error?.message || 'API_ERROR'); return data.content?.[0]?.text?.trim() || ''; }
+
 async function loadBundledLexicon(){
   try {
     const response = await fetch('./lexique-medtraduction-base.json', { cache: 'no-store' });
     if (!response.ok) return;
-
     const data = await response.json();
     if (!Array.isArray(data)) return;
-
-    let added = 0;
-    let updated = 0;
-
+    let changed = false;
     data.forEach(entry => {
       const cleanEntry = {
         fr: (entry.fr || '').toString().trim(),
@@ -270,36 +268,26 @@ async function loadBundledLexicon(){
         anj: (entry.anj || '').toString().trim(),
         cat: (entry.cat || 'Lexique importé').toString().trim()
       };
-
       if (!cleanEntry.fr && !cleanEntry.shi && !cleanEntry.gc && !cleanEntry.anj) return;
-
-      const duplicate = offlineLibrary.find(item =>
-        ['fr', 'shi', 'gc', 'anj'].some(lang =>
-          normalize(item[lang]) && normalize(item[lang]) === normalize(cleanEntry[lang])
-        )
-      );
-
+      const duplicate = offlineLibrary.find(item => ['fr','shi','gc','anj'].some(lang => normalize(item[lang]) && normalize(item[lang]) === normalize(cleanEntry[lang])));
       if (duplicate) {
         Object.assign(duplicate, { ...duplicate, ...cleanEntry });
-        updated += 1;
+        changed = true;
       } else {
         offlineLibrary.unshift(cleanEntry);
-        added += 1;
+        changed = true;
       }
     });
-
-    offlineLibrary = offlineLibrary.slice(0, 500);
-    saveJSON(STORAGE.offline, offlineLibrary);
-    renderLexicon();
-
-    if (els.translateStatus) {
-      els.translateStatus.textContent = `${added} entrée(s) ajoutée(s), ${updated} mise(s) à jour depuis le fichier JSON.`;
+    if (changed) {
+      offlineLibrary = offlineLibrary.slice(0, 500);
+      saveJSON(STORAGE.offline, offlineLibrary);
+      renderLexicon();
     }
   } catch (error) {
     console.warn('Chargement automatique du lexique impossible', error);
   }
 }
-  async function onlineTranslate(text, source, target){ const apiKey=localStorage.getItem(STORAGE.api); if(!apiKey) throw new Error('NO_API'); const system=`Tu es un traducteur médical expert. Traduis de ${PROMPTS[source]} vers ${PROMPTS[target]}. Réponds uniquement par la traduction.${els.formalMode.checked?' Utilise un registre formel.':''}${els.phoneticMode.checked?' Ajoute une phonétique courte si utile.':''}`; const res=await fetch('https://api.anthropic.com/v1/messages',{ method:'POST', headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' }, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:700, system, messages:[{role:'user', content:text}] }) }); const data=await res.json(); if(!res.ok) throw new Error(data.error?.message || 'API_ERROR'); return data.content?.[0]?.text?.trim() || ''; }
+
 function renderPhrasebook(){ els.phrasebook.innerHTML=''; PHRASES.forEach(group=>{ const block=document.createElement('div'); block.className='item'; block.innerHTML=`<h4>${group.cat}</h4>`; group.items.forEach(text=>{ const b=document.createElement('button'); b.className='btn btn-ghost'; b.style.width='100%'; b.style.textAlign='left'; b.style.marginTop='8px'; b.textContent=text; b.onclick=()=>{ els.sourceLang.value='fr'; els.sourceText.value=text; updateCounter(); switchTab('translate'); }; block.appendChild(b); }); els.phrasebook.appendChild(block); }); }
 function renderHistory(){ els.historyCount.textContent=`${history.length} élément${history.length>1?'s':''}`; els.historyList.innerHTML=history.length?'':'<div class="item small">Aucune traduction enregistrée.</div>'; history.forEach((item,index)=>{ const div=document.createElement('div'); div.className='item'; div.innerHTML=`<h4>${LANG_NAMES[item.source]} → ${LANG_NAMES[item.target]}</h4><p>${item.sourceText}</p><p style="margin-top:8px;color:var(--text)">${item.resultText}</p><div class="meta" style="margin-top:8px">${item.at} · ${item.origin}</div><div class="toolbar" style="margin-top:10px"><button class="btn btn-ghost" data-reuse="${index}">Réutiliser</button></div>`; els.historyList.appendChild(div); }); els.historyList.querySelectorAll('[data-reuse]').forEach(btn=>btn.onclick=()=>{ const item=history[Number(btn.dataset.reuse)]; els.sourceLang.value=item.source; els.targetLang.value=item.target; els.sourceText.value=item.sourceText; updateCounter(); setResult(item.resultText, item.origin); switchTab('translate'); }); }
 function renderLexicon(){ const q=normalize(els.lexiconSearch.value); const filtered=offlineLibrary.filter(item => !q || [item.fr,item.shi,item.gc,item.anj,item.cat].some(v => normalize(v).includes(q))); els.lexiconCount.textContent=`${offlineLibrary.length} entrées`; els.personalLexiconLabel.textContent=`${filtered.length} résultat${filtered.length>1?'s':''}`; els.lexiconList.innerHTML=filtered.length?'':'<div class="item small">Aucune entrée trouvée.</div>'; filtered.forEach((item,index)=>{ const div=document.createElement('div'); div.className='item'; div.innerHTML=`<h4>${item.fr || item.shi || item.gc || item.anj || 'Entrée'}</h4><div class="meta">${item.cat || 'Sans catégorie'}</div><div class="chips"><span class="chip">FR</span><span class="small">${item.fr || '—'}</span></div><div class="chips"><span class="chip">SHI</span><span class="small">${item.shi || '—'}</span></div><div class="chips"><span class="chip">GC</span><span class="small">${item.gc || '—'}</span></div><div class="chips"><span class="chip">ANJ</span><span class="small">${item.anj || '—'}</span></div><div class="toolbar" style="margin-top:10px"><button class="btn btn-ghost" data-edit="${index}">Modifier</button><button class="btn btn-danger" data-delete="${index}">Supprimer</button><button class="btn btn-secondary" data-use="${index}">Utiliser</button></div>`; els.lexiconList.appendChild(div); }); els.lexiconList.querySelectorAll('[data-use]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.use)]; els.sourceLang.value='fr'; els.sourceText.value=item.fr || item.shi || item.gc || item.anj || ''; updateCounter(); switchTab('translate'); }); els.lexiconList.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.edit)]; els.lexFr.value=item.fr||''; els.lexShi.value=item.shi||''; els.lexGc.value=item.gc||''; els.lexAnj.value=item.anj||''; els.lexCategory.value=item.cat||''; const realIndex=offlineLibrary.findIndex(entry => JSON.stringify(entry)===JSON.stringify(item)); if(realIndex>=0){ offlineLibrary.splice(realIndex,1); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); els.translateStatus.textContent='Entrée chargée dans le formulaire. Modifie puis enregistre à nouveau.'; switchTab('lexicon'); } }); els.lexiconList.querySelectorAll('[data-delete]').forEach(btn=>btn.onclick=()=>{ const item=filtered[Number(btn.dataset.delete)]; const realIndex=offlineLibrary.findIndex(entry => JSON.stringify(entry)===JSON.stringify(item)); if(realIndex>=0){ offlineLibrary.splice(realIndex,1); saveJSON(STORAGE.offline, offlineLibrary); renderLexicon(); els.translateStatus.textContent='Entrée supprimée du lexique.'; } }); }
@@ -327,7 +315,7 @@ els.speakSourceBtn.addEventListener('click', ()=>speak(els.sourceText.value.trim
 els.speakResultBtn.addEventListener('click', ()=>speak(currentResult.trim(), els.targetLang.value));
 els.translateBtn.addEventListener('click', async()=>{ const text=els.sourceText.value.trim(); if(!text){ els.translateStatus.textContent='Saisis un mot ou une phrase à traduire.'; return; } const source=els.sourceLang.value, target=els.targetLang.value; currentSourceText=text; currentSourceLang=source; currentTargetLang=target; if(source===target){ setResult(text,'Même langue'); return; } els.translateBtn.disabled=true; els.translateStatus.textContent='Recherche de traduction…'; try{ const learned=findLearning(text, source, target); if(learned){ setResult(learned.corrected, 'Correction apprise'); addHistory({ source, target, sourceText:text, resultText:learned.corrected, origin:'Correction apprise' }); els.translateStatus.textContent='Une correction mémorisée a été appliquée.'; } else { const local=findLexiconTranslation(text, source, target); if(local){ setResult(local.text, local.meta); addHistory({ source, target, sourceText:text, resultText:local.text, origin:local.meta }); els.translateStatus.textContent='Traduction trouvée dans le lexique local.'; } else { const online=await onlineTranslate(text, source, target); if(!online) throw new Error('EMPTY_RESULT'); setResult(online, 'En ligne'); addHistory({ source, target, sourceText:text, resultText:online, origin:'En ligne' }); els.translateStatus.textContent='Traduction en ligne terminée.'; } } } catch(error){ setResult('', 'Erreur'); els.translateStatus.textContent = error.message==='NO_API' ? 'Pas de clé API configurée. Utilise ou enrichis le lexique local directement dans l’application.' : 'Impossible de traduire en ligne pour le moment.'; } finally { els.translateBtn.disabled=false; } });
 
-(function init(){ updateCounter(); renderPhrasebook(); renderHistory(); renderLexicon(); loadBundledLexicon() if(localStorage.getItem(STORAGE.api)){ els.apiStatus.textContent='Clé API déjà configurée sur cet appareil.'; } if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); } })();
+(function init(){ updateCounter(); renderPhrasebook(); renderHistory(); renderLexicon(); loadBundledLexicon(); if(localStorage.getItem(STORAGE.api)){ els.apiStatus.textContent='Clé API déjà configurée sur cet appareil.'; } if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); } })();
 </script>
 </body>
 </html>
